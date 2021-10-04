@@ -57,10 +57,10 @@ App = {
   },
 
   loadContract: async () => {
-  	const todoList = await $.getJSON('TodoList.json')
-  	App.contracts.TodoList = TruffleContract(todoList)
-  	App.contracts.TodoList.setProvider(App.web3Provider)
-  	App.todoList = await App.contracts.TodoList.deployed()
+  	const backupHashStorage = await $.getJSON('BackupHashStorage.json')
+  	App.contracts.BackupHashStorage = TruffleContract(backupHashStorage)
+  	App.contracts.BackupHashStorage.setProvider(App.web3Provider)
+  	App.backupHashStorage = await App.contracts.BackupHashStorage.deployed()
   	// console.log(todoList)
   },
 
@@ -70,7 +70,7 @@ App = {
   	}
   	App.setLoading(true)
   	$('#account').html(App.account)
-  	await App.renderTasks()
+  	await App.renderBackups()
   	App.setLoading(false)
   },
 
@@ -87,37 +87,34 @@ App = {
     }
   },
 
-  renderTasks: async () => {
+  renderBackups: async () => {
     // Load the total task count from the blockchain
-    const taskCount = await App.todoList.taskCount()
+    const backupsCount = await App.backupHashStorage.backupsCount()
     const $taskTemplate = $('.taskTemplate')
 
-    // Render out each task with a new task template
-    for (var i = 1; i <= taskCount; i++) {
+    for (var i = 1; i <= backupsCount; i++) {
       // Fetch the task data from the blockchain
-      const task = await App.todoList.tasks(i)
-      const taskId = task[0].toNumber()
-      const taskContent = task[1]
-      const taskCompleted = task[2]
+      const hashMeta = await App.backupHashStorage.hashes(i)
+      const hashId = hashMeta[0].toNumber()
+      const contentsHash = hashMeta[1] 
+      const absoluteFolderPath = hashMeta[2]
+      const timestamp = hashMeta[3]
+      console.log(hashMeta)
 
       // Create the html for the task
-      const $newTaskTemplate = $taskTemplate.clone()
-      $newTaskTemplate.find('.content').html(taskContent)
-      $newTaskTemplate.find('input')
-                      .prop('name', taskId)
-                      .prop('checked', taskCompleted)
-                      .on('click', App.toggleCompleted)
+      // const $newTaskTemplate = $taskTemplate.clone()
+      // $newTaskTemplate.find('.hash').html(contentsHash)
+      // $newTaskTemplate.find('input')
+      //                 .prop('name', absoluteFolderPath)
+                      // .on('click', App.toggleCompleted)
 
       // Put the task in the correct list
-      if (taskCompleted) {
-        $('#completedTaskList').append($newTaskTemplate)
-      } else {
-        $('#taskList').append($newTaskTemplate)
-      }
+    $('#backupsHashList').append('<tr><td>'+hashId+'</td><td>'+contentsHash+'</td><td>'+absoluteFolderPath+'</td><td>'+timestamp+'</td><td><button class="verifyButton">verify</button></td></tr>')
 
       // Show the task
-      $newTaskTemplate.show()
+      // $newTaskTemplate.show()
     }
+    // $('#backupsHashList').append('<tr><td>'+v+' my data</td><td>more data</td></tr>')
   }
 
 }
