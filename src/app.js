@@ -11,7 +11,20 @@ App = {
 		await App.loadAccount()
 		await App.loadContract()
 		await App.render()
+		await App.buttonClick()
 	},
+
+  buttonClick: async()  => {
+  	$(".verify").click(function() {
+		var currentRow = $(this).closest("tr");
+		var seq = currentRow.find(".seq").text();
+		var hash = currentRow.find(".hash").text();
+		var path = currentRow.find(".path").text();
+		var timestamp = currentRow.find(".time").text();
+
+		// use the values to call the function
+	})
+  },
 
 	// https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8
   loadWeb3: async () => {
@@ -93,28 +106,22 @@ App = {
     const $taskTemplate = $('.taskTemplate')
 
     for (var i = 1; i <= backupsCount; i++) {
-      // Fetch the task data from the blockchain
+      // Fetch the backups data from the blockchain
       const hashMeta = await App.backupHashStorage.hashes(i)
-      const hashId = hashMeta[0].toNumber()
+      const seq = hashMeta[0].toNumber()
       const contentsHash = hashMeta[1] 
       const absoluteFolderPath = hashMeta[2]
       const timestamp = hashMeta[3]
-      console.log(hashMeta)
 
-      // Create the html for the task
-      // const $newTaskTemplate = $taskTemplate.clone()
-      // $newTaskTemplate.find('.hash').html(contentsHash)
-      // $newTaskTemplate.find('input')
-      //                 .prop('name', absoluteFolderPath)
-                      // .on('click', App.toggleCompleted)
+      const seqCol = '<td class="seq">'+seq+'</td>'
+      const hashCol = '<td class="hash">'+contentsHash+'</td>'
+      const absoluteFolderPathCol = '<td class="path">'+absoluteFolderPath+'</td>'
+      const timestampCol = '<td class="time">'+timestamp+'</td>'
+      const buttonCol = '<td><button class="verify">verify</button></td>'
 
-      // Put the task in the correct list
-    $('#backupsHashList').append('<tr><td>'+hashId+'</td><td>'+contentsHash+'</td><td>'+absoluteFolderPath+'</td><td>'+timestamp+'</td><td><button class="verifyButton">verify</button></td></tr>')
+    $('#backupsHashList').append('<tr>'+seqCol+hashCol+absoluteFolderPathCol+timestampCol+buttonCol+'</tr>')
 
-      // Show the task
-      // $newTaskTemplate.show()
     }
-    // $('#backupsHashList').append('<tr><td>'+v+' my data</td><td>more data</td></tr>')
   }
 
 }
