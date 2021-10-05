@@ -22,12 +22,15 @@ App = {
 		var path = currentRow.find(".path").text();
 		var timestamp = currentRow.find(".time").text();
 
-    // python script -- verification
-    console.log('Button Clicked !!')
-
-    App.backupHashStorage.addHashToBlochain('abc','abc')
-
-		// use the values to call the function
+		$.ajax({
+                url:'http://localhost:5000/verify?hash='+hash + '&path='+path,
+                dataType:'json',
+                type: 'post',
+                success:function(response){
+                    console.log("response " + response)
+                   alert(response.message)
+                }
+            });
 	})
   },
 
