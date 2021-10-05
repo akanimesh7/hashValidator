@@ -4,9 +4,6 @@ contract BackupHashStorage {
 	uint public backupsCount = 0;
 
 	constructor() public {
-		addHashToBlochain('tempHash1','tempPath1');
-		addHashToBlochain('tempHash2','tempPath2');
-		addHashToBlochain('tempHash3','tempPath3');
 	}
 
 	struct HashMeta {

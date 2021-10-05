@@ -22,6 +22,11 @@ App = {
 		var path = currentRow.find(".path").text();
 		var timestamp = currentRow.find(".time").text();
 
+    // python script -- verification
+    console.log('Button Clicked !!')
+
+    App.backupHashStorage.addHashToBlochain('abc','abc')
+
 		// use the values to call the function
 	})
   },
@@ -110,16 +115,19 @@ App = {
       const hashMeta = await App.backupHashStorage.hashes(i)
       const seq = hashMeta[0].toNumber()
       const contentsHash = hashMeta[1] 
-      const absoluteFolderPath = hashMeta[2]
+      const absoluteFolderPath = hashMeta[2].split('/').slice(4,6).join('/')
       const timestamp = hashMeta[3]
+      var theDate = new Date(timestamp * 1000);
+      dateString = theDate.toGMTString();
 
       const seqCol = '<td class="seq">'+seq+'</td>'
       const hashCol = '<td class="hash">'+contentsHash+'</td>'
       const absoluteFolderPathCol = '<td class="path">'+absoluteFolderPath+'</td>'
-      const timestampCol = '<td class="time">'+timestamp+'</td>'
+      const timestampCol = '<td class="time">'+dateString+'</td>'
       const buttonCol = '<td><button class="verify">verify</button></td>'
 
-    $('#backupsHashList').append('<tr>'+seqCol+hashCol+absoluteFolderPathCol+timestampCol+buttonCol+'</tr>')
+    $('#backupsHashList').append('<tr>'+seqCol+hashCol
+      +absoluteFolderPathCol+timestampCol+buttonCol+'</tr>')
 
     }
   }
